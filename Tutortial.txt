@@ -1,0 +1,30 @@
+**What is the audience these block posts should be geared toward?
+
+The goal of this tutorial is to create a custom ERC20 token that has a fixed total supply and all tokens are initial stored on a Trezor.  
+
+What is an ERC20
+.
+.
+.
+.
+ERC20 functionality 
+.
+.
+.
+How To launch an ERC20 token with fixed token supply 
+Initialize and configure project  **Set up steps-------
+mkdir and cd dir
+Npm install truffle --save
+Truffle init 
+Npm init 
+npm install openzeppelin-solidity 
+git init 
+Create repo gihub.com
+echo "Your description" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/blockchain-institute-of-technology/FixedSupplyBasicERC20.git
+git push -u origin master
+Copy paste code to truffle.js from the expample 
+In package.json -> under scripts: tests change echo \"Error: no test specified\ && exit 1 to truffle test
