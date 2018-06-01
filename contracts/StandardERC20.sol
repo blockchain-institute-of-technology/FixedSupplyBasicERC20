@@ -8,8 +8,8 @@ contract StandardERC20 is StandardToken {
     uint8 public decimals;// = 18;
 
 
-  constructor(address initialAccount, uint256 initialBalance, string _name, string _symbol, uint8 decimals) public {
-    balances[initialAccount] = initialBalance;
-    totalSupply_ = initialBalance;
+  function StandardERC20() public {
+    balances[msg.sender] = 100;
+    totalSupply_ = 100;
   }
 }

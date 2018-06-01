@@ -1,87 +1,100 @@
-//import assertRevert from '../../helpers/assertRevert';
-var web3 = require('web3');
-var BigNumber = require('bignumber.js');
-
-var StandardERC20 = artifacts.require("StandardERC20")
-
-contract('StandardERC20', (accounts) => {
-    const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+//import assertRevert from '../assertRevert';
+const tokenContract = artifacts.require('StandardERC20');
 
 
-    beforeEach(async function () {
-        this.token = await StandardERC20.deploy("StandardERC20","SERC20",18,100);
-    });
-
-    describe('total supply', function () {
-        it('returns the total amount of tokens', async function () {
-            var totalSupply = await this.token.totalSupply();
-            var expected = new BigNumber(100);
-    
-            console.log(totalSupply);
-            console.log(expected);
-            assert.equal(totalSupply, expected);
-    });
-  });
-});
-
-/*deployer.deploy(Foo, 1, 2)
-
-
-var MyContract = artifacts.require("EmploymentAgreement")
-
-contract('EmploymentAgreement', (accounts) => {
-
-  it('get ETH price', function(done){
-        MyContract.deployed().then(async function(instance) {
-            const address = await instance.address;
-            const agreement = MyContract.at(address);
-            const ehtPrice = await agreement.getUSD();
-            
-            //assert(tokenAddress, 'Token address couldn\'t be stored');
-            console.log(ethPrice);
-            done();
-       });
-    });
-});*/
-
-
-
-/*    
-const StandardERC20 = artifacts.require('StandardERC20');
-
-contract('StandardERC20', function ([_, owner, recipient, anotherAccount]) {
+contract('StandardToken', function (accounts) {
   const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
- beforeEach(async function () {
-    this.token = await StandardERC20.new(owner, 100);
+  //beforeEach(async function () {
+    //this.token = await tokenContract.deployed()(owner, 100);
+  //});
+  it("should put 100 StandardErc20 in the deployers account", function() {
+    return tokenContract.deployed().then(function(instance) {
+      return instance.balanceOf(accounts[0]);
+    }).then(function(balance) {
+      assert.equal(balance.valueOf(), 100, "100 wasn't in the first account");
+    });
   });
-});  
+  it('should have totalSupply of 100', async function () {
+    return tokenContract.deployed().then(function(instance) {
+      return instance.totalSupply();
+    }).then(function(_totalSupply) {
+      assert.equal(_totalSupply.valueOf(), 100, "100 wasn't in the first account");
+    });
 
-  describe('total supply', function () {
-    it('returns the total amount of tokens', async function () {
-      const totalSupply = await this.token.totalSupply();
+  });
+  it('should have 0 balance of random account', async function() {
+    return tokenContract.deployed().then(function(instance) {
+      return instance.balanceOf(accounts[7]);
+    }).then(function(balance) {
+      assert.equal(balance.valueOf(), 0, "0 wasn't in the rando account");
+    });
 
-      assert.equal(totalSupply, 100);
+  });
+  it('should allow valid transfer amounts', async function() {
+    const to = accounts[2];
+    const sender = accounts[0]
+    const amount = 10;
+    var instance;
+ 
+    return tokenContract.deployed().then( async function(_instance) {
+      instance = _instance;
+      await instance.transfer(to, amount, { from: sender });
+      return instance.balanceOf(accounts[0]);
+    }).then(function(_balance0) {
+      assert.equal(_balance0.valueOf(), 90, "Sender balance should be deducted");
+      return instance.balanceOf(accounts[2]);
+    }).then(function(_balance2){
+      assert.equal(_balance2.valueOf(), 10, "Reciever balance should be added");
+    });
+
+  });
+  it.skip('should not allow invalid transfer amounts', async function() {
+    const to = accounts[2];
+    const sender = accounts[0]
+    const amount = 1000;
+    var instance;
+ 
+    return tokenContract.deployed().then( async function(_instance) {
+      instance = _instance;
+      await instance.transfer(to, amount, { from: sender });
+      return instance.balanceOf(accounts[0]);
+    }).then(function(_balance0) {
+      assert.equal(_balance0.valueOf(), 100, "Sender balance should not be deducted");
+      return instance.balanceOf(accounts[2]);
+    }).then(function(_balance2){
+      assert.equal(_balance2.valueOf(), 0, "Reciever balance should not be added");
+    });
+
+  });
+  it('should emit event on transfer', function() {
+    const to = accounts[2];
+    const sender = accounts[0]
+    const amount = 10;
+    return tokenContract.deployed().then(async function(instance) {
+      const { logs } = await instance.transfer(to, amount, { from: sender });
+      assert.equal(logs.length, 1);
+      assert.equal(logs[0].event, 'Transfer');
+      assert.equal(logs[0].args.from, sender);
+      assert.equal(logs[0].args.to, to);
+      assert(logs[0].args.value.eq(amount));
+
     });
   });
 
-  describe('balanceOf', function () {
-    describe('when the requested account has no tokens', function () {
-      it('returns zero', async function () {
-        const balance = await this.token.balanceOf(anotherAccount);
 
-        assert.equal(balance, 0);
-      });
+
+
+
+
+/*
+  it('', async function() {
+    return tokenContract.deployed().then(function(instance) {
+      return instance.   ;
+    }).then(function(var) {
+      assert.equal();
     });
 
-    describe('when the requested account has some tokens', function () {
-      it('returns the total amount of tokens', async function () {
-        const balance = await this.token.balanceOf(owner);
-
-        assert.equal(balance, 100);
-      });
-    });
-  });
 
   describe('transfer', function () {
     describe('when the recipient is not the zero address', function () {
@@ -513,6 +526,6 @@ contract('StandardERC20', function ([_, owner, recipient, anotherAccount]) {
         assert.equal(logs[0].args.spender, spender);
         assert(logs[0].args.value.eq(amount));
       });
-    });
-  });
-});*/
+    });*/
+  //});
+});
