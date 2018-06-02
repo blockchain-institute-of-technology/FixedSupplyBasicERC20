@@ -1,10 +1,8 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = 'gadget robust eager rabbit drum attitude power sight hazard cost real aim';
+var mnemonic = 'bucket robust eager rabbit drum attitude power sight hazard cost real aim';
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // for more about customizing your Truffle configuration!
-
-
   networks: {
     development: {
       //gas: 1800000,

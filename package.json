@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "truffle test"
+    "test": "truffle test",
+    "deploy:ropsten": "truffle migrate --network ropsten"
   },
   "author": "",
   "license": "ISC",
