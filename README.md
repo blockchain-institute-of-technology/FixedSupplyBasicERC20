@@ -277,9 +277,14 @@ myContract.methods.transfer('0xA7A10e02B4A5243eFe24d651ccc6566c6dDA9506', 1).sen
 ### Viewing your token contract on a block explorer
 Once the token contract is deployed the console will log the tokens contract address.  It is important to save this adderess because that is how you will search for it on a block explorer.  The best ethereum blockchain explorer is https://etherscan.io/
 
-
+#### Contract Homepage
+Here you can view the amount of ether stored in the contract, the number of txs made, the origin of the contract and the creator
 ![alt text](/images/tokenContractHome.png "Token Contract Home")
+
+You can find info of the hodlers of the token 
 ![alt text](/images/hodlersPie.png "Hodlers Pie chart")
+
+Watch events emmited from your contract 
 ![alt text](/images/events.png "Watch events")
 
 
