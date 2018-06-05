@@ -40,6 +40,7 @@ However, Truffle can sign transactions through the use of its HDWalletProvider. 
 
 ```sh
 npm install truffle-hdwallet-provider
+npm install dotenv
 ```
 
 ### Installing OpenZeppelin
@@ -56,39 +57,63 @@ npm install -E openzeppelin-solidity
 The first thing we must do is to configure our Truffle project to connect to a network.  First for testing we want to connect to a local blockchain running on our machine with Ganache, as we continue to develop we may want to test our smart contract on an Ethereum testnet like Ropsten and finally we will want to automatically deploy to Ethereums mainnet via truffle.
 
 In the truffle.js add these lines of code 
-#### **Warning** Do not use this mnemonic seed for real ETH this is just an example.
 ```sh 
+require('dotenv').config()
 var HDWalletProvider = require("truffle-hdwallet-provider");
-var mnemonic = 'bucket robust eager rabbit drum attitude power sight hazard cost real aim';
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // for more about customizing your Truffle configuration!
   networks: {
     development: {
-      //gas: 1800000,
       host: "127.0.0.1",
       port: 7545,
       network_id: "*" // Match any network id
     },
      ropsten: {
-      provider: function() {
-      	//0x9c76b879dceb4936b890127be7e4930ca9525db4 -> eth address
-        return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/9IVwUjnwncMb0oQAHHIP", 0)
+      provider: function() { 
+        console.log(`https://ropsten.infura.io/${process.env.INFURA_API_KEY}`)
+        return new HDWalletProvider(process.env.WALLET_MNEMONIC, `https://ropsten.infura.io/${process.env.INFURA_API_KEY}`)
       },
+      gas: 1000000,
       network_id: 3
     },
     "live":{
-      network_id: 1,
       provider: function() {
-        //0x9c76b879dceb4936b890127be7e4930ca9525db4 -> eth address
-        return new HDWalletProvider(mnemonic, "https://mainnet.infura.io/9IVwUjnwncMb0oQAHHIP ", 0)
-      }
+        return new HDWalletProvider(process.env.WALLET_MNEMONIC, `https://mainnet.infura.io/${process.env.INFURA_API_KEY}`)
+      },
+      network_id: 1
     }
   }
 };
 ```
 
-We must modify our package.json file to let the truffle framework know what scripts to run
+It is important to keep seceret variables seceret! You do not want to publish your mnemonic seed or access tokens, to hide these we will set up enviornment variables.  In the terminal create a .env file to store your enviornment variables and then a .gitignore file so it is not added to your repo.
+
+```sh
+touch .env
+touch .gitignore 
+echo ".env" >> .gitignore
+```
+
+Here is a sample of what your .env should look like we are using a main net account 
+
+```sh
+# Ropsten node config
+
+ROPSTEN_HOST = localhost
+ROPSTEN_PORT = 8000
+ROPSTEN_FROM_ADDRESS = 0x9c76b879dceb4936b890127be7e4930ca9525db4 
+MAIN_FROM_ADDRESS = 
+
+# Infura config
+
+#Test account
+TEST_WALLET_MNEMONIC = bucket robust eager rabbit drum attitude power sight hazard cost real aim
+
+WALLET_MNEMONIC = 
+
+INFURA_API_KEY = 9IVwUjnwncMb0oQAHHIP
+```
 
 ```sh
 {
@@ -115,23 +140,46 @@ We must modify our package.json file to let the truffle framework know what scri
 ```
 
 ### Creating the Smart Contract
-We are leveraging (openzepplins)[https://openzeppelin.org/ ] ERC20 Standard Token contract.  This token contract implements all of the necessary methods we need for deploying an ERC20 token.  We simply need to provide a name, symbol, initial supply, owner of initial supply, and specify the number of decimal places for each unit of our token.
+We are leveraging [openzepplins](https://openzeppelin.org/) ERC20 Standard Token contract.  This token contract implements all of the necessary methods we need for deploying an ERC20 token.  We simply need to provide a name, symbol, initial supply, owner of initial supply, and specify the number of decimal places for each unit of our token.
 
 ```sh
 pragma solidity ^0.4.21;
 import 'openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
-contract StandardERC20 is StandardToken {
+contract Anypay is StandardToken {
+    
+    string public name = "Anypay";
+    string public symbol = "ANY";
+    uint8 public decimals = 0;
 
-	string public name = "StandardERC20";
-    string public symbol = "SERC20";
-    uint8 public decimals = 18;
+    function Anypay() public {
+      address owner = msg.sender;
+      uint supply = 100;
+      balances[owner] = supply;
+      totalSupply_ = supply;
+    }
+}
+
+```
+
+If you are deploying your own contract than this contract works fine, the initial supply is intialized into the msg.senders account.  Lets say you are deploying a token for a client, you will not want the intial funds to be sent to your address.  Modify the code in this way to send to any public eth adderess. NOTE this will break the truffle tests because the tests rely on being able to control the owners private key.
+
+```sh
+pragma solidity ^0.4.21;
+import 'openzeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
+contract Anypay is StandardToken {
+    string public name = "Anypay";
+    string public symbol = "ANY";
+    uint8 public decimals = 0;
 
     
-  function StandardERC20() public {
-    balances[msg.sender] = 1000000000000;
-    totalSupply_ = 1000000000000;
-  }
+  function Anypay() public {
+      uint supply = 1000000000000;
+      address owner = 0x89287BEC6C4E79552d562DA799500884CC22a39B;
+      balances[owner] = supply;
+      totalSupply_ = supply;
+    }
 }
+
 
 ```
 
@@ -151,17 +199,15 @@ module.exports = function(deployer) {
 ```
 
 ### Testing 
-Smart contracts must be thoroughly tested for they are immutable and often deal with real money.  
-
+Smart contracts must be thoroughly tested for they are immutable and often deal with real money.  [Example tests](https://github.com/blockchain-institute-of-technology/FixedSupplyBasicERC20/blob/master/test/intialTest.js)
 ```sh 
 npm test
 ```
 
-Once all tests pass we can deploy on the mainnet 
-
 ### Deploying on mainnet 
+
 ```sh
-truffle migrate --network live
+npm run deploy:mainnet
 ```
  
 

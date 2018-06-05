@@ -1,5 +1,5 @@
 //const assertRevert =  require('../assertRevert');
-const tokenContract = artifacts.require('StandardERC20');
+const tokenContract = artifacts.require('Anypay');
 
 
 contract('StandardToken', function (accounts) {

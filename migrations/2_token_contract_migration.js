@@ -1,4 +1,4 @@
-var tokenContract = artifacts.require("./StandardERC20.sol");
+var tokenContract = artifacts.require("./Anypay.sol");
 
 module.exports = function(deployer) {
   deployer.deploy(tokenContract);
