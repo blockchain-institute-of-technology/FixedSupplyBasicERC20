@@ -190,7 +190,7 @@ Truffle handles contract deployment for us.  This means that the framework will 
 
 Under the migrations directory add a file named **2_token_contract_migration.js**
 ```sh
-var tokenContract = artifacts.require("./StandardERC20.sol");
+var tokenContract = artifacts.require("./Anypay.sol");
 
 module.exports = function(deployer) {
   deployer.deploy(tokenContract);
@@ -210,5 +210,49 @@ npm test
 npm run deploy:mainnet
 ```
  
+### Interacting with the contract using web3
+
+Once the contract is deployed it is open to the public to interact with.  To interact with our contract we can use the node module [web3](https://web3js.readthedocs.io/en/1.0/getting-started.html)
+
+```sh 
+npm install web3 --save
+node
+```
+
+Inside the node console we will first intialize web3 with our infura provider 
+
+```sh
+var Web3 = require('Web3')
+const web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/9IVwUjnwncMb0oQAHHIP"));
+web3.currentProvider
+```
+
+Next we need to add our wallet to the web3 instance so that we can sign transactions.
+```sh 
+web3.eth.accounts.wallet.add(' add private key here ')
+```
+
+To talk to the contract we will have to provide the contracts ABI which stands for Abstract Binary Interface.  This is a json object that describes the funtionality of a contract. When you compile a contract with solc a contract ABI should appear in the /bin directory.  I find the easiest way to get your contracts ABI is to copy and paste the contract into the [remix compiler](https://remix.ethereum.org/) which is a in browser solidity compiler.  Under the compile tab in remix select details and it will provide a button to copy the contracts ABI to your clipboard.  I recommend then pasting the ABI to a JSON file in your root directory and then saving it.
+
+NOTE: If your contract inherits from other contracts like Anypay.sol you will have to copy paste the inherited contracts into the remix browser.
+
+```sh 
+const Abi = JSON.parse(fs.readFileSync('contractAbi.json', 'utf8'))
+const contractAddress = '0xf78fd2bf9af56c1e26335ea3b0759c5f84ecaaa5'
+const myContract = new web3.eth.Contract(Abi, contractAddress, { from: '', gasPrice: '20000000000'})
+```
+#### Example calls
+
+```sh
+//To get the symbol
+myContract.methods.symbol().call().then(console.log).catch(console.error)
+
+//To transfer tokens 
+myContract.methods.transfer('0xA7A10e02B4A5243eFe24d651ccc6566c6dDA9506', 1).send().then(console.log).catch(console.error)
+```
+
+
+
+
 
 
