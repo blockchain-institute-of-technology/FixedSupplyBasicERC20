@@ -27,4 +27,12 @@ git commit -m "first commit"
 git remote add origin https://github.com/blockchain-institute-of-technology/FixedSupplyBasicERC20.git
 git push -u origin master
 Copy paste code to truffle.js from the expample 
-In package.json -> under scripts: tests change echo \"Error: no test specified\ && exit 1 to truffle test
+In package.json under scripts: tests change echo \"Error: no test specified\ && exit 1 to truffle test
+
+
+Interacting with Token Contract using web3 using Infura Ethereum node:
+
+If you are not running your own etherum node you will have to use a third party node like infura to connect to the ethereum network.  
+
+
+

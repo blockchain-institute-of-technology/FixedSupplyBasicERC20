@@ -11,12 +11,18 @@ module.exports = {
       network_id: "*" // Match any network id
     },
      ropsten: {
-      //gas: 500000,
       provider: function() {
       	//0x9c76b879dceb4936b890127be7e4930ca9525db4 -> eth address
         return new HDWalletProvider(mnemonic, "https://ropsten.infura.io/9IVwUjnwncMb0oQAHHIP", 0)
       },
       network_id: 3
-    }   
+    },
+    "live":{
+      network_id: 1,
+      provider: function() {
+        //0x9c76b879dceb4936b890127be7e4930ca9525db4 -> eth address
+        return new HDWalletProvider(mnemonic, "https://mainnet.infura.io/9IVwUjnwncMb0oQAHHIP ", 0)
+      }
+    }
   }
 };

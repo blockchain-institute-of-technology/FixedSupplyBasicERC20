@@ -252,7 +252,4 @@ contract('StandardToken', function (accounts) {
       });
     });
   });
-
-
-
 });
