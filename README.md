@@ -1,4 +1,4 @@
-#Creating an Standard ERC20 Token with OpenZepplin 
+Creating an Standard ERC20 Token with OpenZepplin 
 ======
 
 An ERC20 Token is one that follows the ERC20 interface for the the Ethereum Blockchain.  The token may include custom logic but all ERC20 tokens implement these 6 methods and 2 Events. 
@@ -17,13 +17,11 @@ An ERC20 Token is one that follows the ERC20 interface for the the Ethereum Bloc
 Transfer(address indexed _from, address indexed _to, uint256 _value). [Triggered when tokens are transferred.]
 Approval(address indexed _owner, address indexed _spender, uint256 _value)[Triggered whenever approve(address _spender, uint256 _value) is called.]
 
-We will implement an ERC20 token using the truffle framework, open-zepplin solidity library and CircleCI auto-build intergration
-
-##Getting Started 
+We will implement an ERC20 token using the truffle framework, open-zepplin solidity library and CircleCI auto-build integration
 
 ### Ganache 
 Ganache is a local blockchain that can be used for testing.
-Download here [Truffle Donwload](http://truffleframework.com/ganache/)
+Download here [Truffle Download](http://truffleframework.com/ganache/)
 
 ### Truffle
 
@@ -90,7 +88,7 @@ module.exports = {
 };
 ```
 
-We must modidify our package.json file to let the truffle framework know what scripts to run
+We must modify our package.json file to let the truffle framework know what scripts to run
 
 ```sh
 {
@@ -117,7 +115,7 @@ We must modidify our package.json file to let the truffle framework know what sc
 ```
 
 ### Creating the Smart Contract
-We are leveraging (openzepplins)[https://openzeppelin.org/ ] ERC20 Standard Token contract.  This token contract implements all of the neccesary methods we need for deploying an ERC20 token.  We simply need to provide a name, symbol, intial supply, owner of initial supply, and specify the number of decimal places for each unit of our token.
+We are leveraging (openzepplins)[https://openzeppelin.org/ ] ERC20 Standard Token contract.  This token contract implements all of the necessary methods we need for deploying an ERC20 token.  We simply need to provide a name, symbol, initial supply, owner of initial supply, and specify the number of decimal places for each unit of our token.
 
 ```sh
 pragma solidity ^0.4.21;
@@ -140,10 +138,10 @@ contract StandardERC20 is StandardToken {
 
 ### Migration 
 
-Truffle handles contract deployment for us.  This means that the framework will compile your solidity contracts into EVM bytecode and then launch your contract using the network you specify and then run all the tests in the test directory if you are runnning on a test network. Read more at https://medium.com/@blockchain101/demystifying-truffle-migrate-21afbcdf3264
+Truffle handles contract deployment for us.  This means that the framework will compile your solidity contracts into EVM bytecode and then launch your contract using the network you specify and then run all the tests in the test directory if you are running on a test network. Read more at https://medium.com/@blockchain101/demystifying-truffle-migrate-21afbcdf3264
 
 ### Testing 
-Smart contracts must be throughly tested for they are immutable and often deal with real money.  
+Smart contracts must be thoroughly tested for they are immutable and often deal with real money.  
 
 ```sh 
 npm test
@@ -155,4 +153,6 @@ Once all tests pass we can deploy on the mainnet
 ```sh
 truffle migrate --network live
 ```
+ 
+
 
