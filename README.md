@@ -140,6 +140,16 @@ contract StandardERC20 is StandardToken {
 
 Truffle handles contract deployment for us.  This means that the framework will compile your solidity contracts into EVM bytecode and then launch your contract using the network you specify and then run all the tests in the test directory if you are running on a test network. Read more at https://medium.com/@blockchain101/demystifying-truffle-migrate-21afbcdf3264
 
+Under the migrations directory add a file named **2_token_contract_migration.js**
+```sh
+var tokenContract = artifacts.require("./StandardERC20.sol");
+
+module.exports = function(deployer) {
+  deployer.deploy(tokenContract);
+};
+
+```
+
 ### Testing 
 Smart contracts must be thoroughly tested for they are immutable and often deal with real money.  
 
