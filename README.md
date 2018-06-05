@@ -68,13 +68,14 @@ module.exports = {
       host: "127.0.0.1",
       port: 7545,
       network_id: "*" // Match any network id
+      gas: 2000000
     },
      ropsten: {
       provider: function() { 
         console.log(`https://ropsten.infura.io/${process.env.INFURA_API_KEY}`)
         return new HDWalletProvider(process.env.WALLET_MNEMONIC, `https://ropsten.infura.io/${process.env.INFURA_API_KEY}`)
       },
-      gas: 1000000,
+      gas: 2000000,
       network_id: 3
     },
     "live":{
@@ -87,6 +88,7 @@ module.exports = {
 };
 ```
 
+#### Enviornment Variables
 It is important to keep seceret variables seceret! You do not want to publish your mnemonic seed or access tokens, to hide these we will set up enviornment variables.  In the terminal create a .env file to store your enviornment variables and then a .gitignore file so it is not added to your repo.
 
 ```sh
@@ -204,6 +206,26 @@ Smart contracts must be thoroughly tested for they are immutable and often deal 
 npm test
 ```
 
+#### Let's talk about gas 
+Every transaction requires gas to be executed by the network.  The gas is paid to the miners as a reward for their work, more complex operations cost more work.  To determine how much gas your contract will need to execute you can simply log how much gas it costs in your tests to get an estimate of how much ETH you will have to spend to deploy to the mainnet.  For our contract the gas used was 1475546.  The standard cost of 1 unit of gas is 20 gwei or 1x10^-9 ETH. 
+
+20000000000 * 1475546 = 0.029511 ETH ~= $18.00 USD cost for deployment
+
+You want to set the gas limit to a surplus because if the contract does happen to reach its gas limit the execution will stop and the gas used will not be refunded.
+
+
+
+```javascript
+it("Should deploy with less than 4.7 mil gas", async () => {
+  let someInstance = await tokenContract.new();
+  let receipt = await web3.eth.getTransactionReceipt(someInstance.transactionHash);
+  console.log("GAS USED", receipt.gasUsed );
+  assert.isBelow(receipt.gasUsed, 4700000);
+});
+
+```
+
+
 ### Deploying on mainnet 
 
 ```sh
@@ -250,6 +272,15 @@ myContract.methods.symbol().call().then(console.log).catch(console.error)
 //To transfer tokens 
 myContract.methods.transfer('0xA7A10e02B4A5243eFe24d651ccc6566c6dDA9506', 1).send().then(console.log).catch(console.error)
 ```
+
+
+### Viewing your token contract on a block explorer
+Once the token contract is deployed the console will log the tokens contract address.  It is important to save this adderess because that is how you will search for it on a block explorer.  The best ethereum blockchain explorer is https://etherscan.io/
+
+
+![alt text](/images/tokenContractHome.png "Token Contract Home")
+![alt text](/images/hodlersPie.png "Hodlers Pie chart")
+![alt text](/images/events.png "Watch events")
 
 
 

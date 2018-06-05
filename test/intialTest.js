@@ -32,6 +32,12 @@ contract('StandardToken', function (accounts) {
         assert.equal(balance.valueOf(), 0, "0 wasn't in the rando account");
       });
     });
+    it("Should deploy with less than 2 mil gas", async () => {
+        let someInstance = await tokenContract.new();
+        let receipt = await web3.eth.getTransactionReceipt(someInstance.transactionHash);
+        console.log("GAS USED", receipt.gasUsed );
+        assert.isBelow(receipt.gasUsed, 2000000);
+      });
   });
 
   describe('Transfer function', function(){
